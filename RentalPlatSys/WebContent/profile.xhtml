@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">   
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:h="http://java.sun.com/jsf/html" 
+	xmlns:f="http://java.sun.com/jsf/core" 
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">   
+<h:head>  
+ 	<title>profile</title>  
+</h:head>   
+<h:body>  
+	<ui:include src="stack.xhtml" />
+	<p:panel header="update your info" style="margin-bottom:12px;width:1000px;"> 
+		<h:form id="profile">
+			<h:panelGrid columns="2" style="margin-bottom:12px" cellpadding="5">
+				<h:outputLabel value="EMAIL:" style="font-weight:bold" /> <h:outputLabel value="#{profile.email}" style="font-weight:bold" />
+				<h:outputLabel value="NAME:" style="font-weight:bold" /> <h:inputText value="#{profile.name}" style="font-weight:bold" />
+				<h:outputLabel value="PHONE:" style="font-weight:bold" /> <h:inputText value="#{profile.phone}" style="font-weight:bold" />
+				<h:outputLabel value="ADDRESS:" style="font-weight:bold" /> <h:inputText value="#{profile.address}" style="font-weight:bold" />
+				<p:commandButton value="save" action="#{profile.updateProfile}" onclick="alert('save successful');"/> 
+			</h:panelGrid>
+		</h:form>
+ 	</p:panel>
+ 	<p:panel header="update your credential" style="margin-bottom:12px;width:1000px;">
+	 	<h:form enctype="multipart/form-data"> 
+	 	<p:layout style="height:300px">
+	 		<p:layoutUnit position="west" size="200">
+		    	<p:graphicImage id="credPhoto" style="width:180px;height:270px;" value="upload_cred/#{profile.cred}"/>
+	 		</p:layoutUnit>
+    		<p:layoutUnit position="center">
+	 			<h:outputLabel value="upload your credential:" style="font-weight:bold" />
+	 			<p:fileUpload fileUploadListener="#{profile.saveCred}" mode="advanced" dragDropSupport="false"
+           		fileLimit="1" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" update="credPhoto" />
+           	</p:layoutUnit>
+	 	</p:layout>
+	 	</h:form>
+ 	</p:panel>
+ 	<p:panel header="subscribe manage" style="margin-bottom:12px;width:1000px;">
+	 	<h:form id="subscribe">
+		 	<h:panelGrid columns="3" style="margin-bottom:12px" cellpadding="5">
+		 		<h:outputLabel value="keyword:" style="font-weight:bold" /><h:inputText required="true" value="#{sub.keyword}" />
+		 		<p:commandButton value="submit" update=":subscriber:subKeywords" action="#{sub.saveSub}"/> 
+		 	</h:panelGrid>
+		 </h:form>
+		 <h:form id="subscriber">
+			<h:dataTable id="subKeywords" value="#{sub.keywords}" var="sk">
+				<h:column>
+					<p:commandButton ajax="true" value="delete" update="@form" action="#{sub.delSub(sk.id)}" />
+					<h:outputLabel value="keyword:" style="font-weight:bold" />
+					<h:outputLabel value="#{sk.subscribe_name}" style="font-weight:bold" />	
+				</h:column>
+			</h:dataTable>
+		</h:form>
+	</p:panel>
+</h:body>   
+</html> 

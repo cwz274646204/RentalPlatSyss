@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">   
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:h="http://java.sun.com/jsf/html" 
+	xmlns:f="http://java.sun.com/jsf/core" 
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">   
+	
+<h:head>  
+	<title>login</title>  
+</h:head>   
+<h:body>
+	<h:form id="login_form"> 
+	<p:messages autoUpdate="true"/>
+		<h:panelGrid columns="1" style="position: absolute;left:35%;top:30%;display:block; text-align:center"> 
+			<h:panelGrid columns="2" cellpadding="5" style="margin: 0 auto;">     
+				<h:outputText value="EMAIL:"/>
+				<p:inputText id="email" required="true" value="#{userLogin.email}" />
+				<h:outputText value="PASSWORD:"/>
+				<p:password id="password" required="true" value="#{userLogin.password}" />
+			</h:panelGrid>
+			<h:panelGrid columns="2" cellpadding="1" style="margin: 0 auto;">
+				<p:commandButton value="login" validateClient="true" actionListener="#{userLogin.login}"/> 
+				<p:commandButton value="register" onclick="window.location.href='reg.xhtml'"/>
+			</h:panelGrid>
+		</h:panelGrid>
+	</h:form>  
+</h:body>   
+</html> 

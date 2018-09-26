@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">   
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:h="http://java.sun.com/jsf/html" 
+	xmlns:f="http://java.sun.com/jsf/core" 
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">   
+<h:head>  
+ 	<title>contract</title>  
+</h:head>   
+<h:body> 
+	<ui:include src="stack.xhtml" />
+	<h3>Contract List</h3>
+	<h:form>
+		<p:accordionPanel id="acc" value="#{con.conList}" activeIndex="null" var="list" style="width:1000px">
+		<p:ajax event="tabChange" listener="#{con.onTabChange}" update="proDlg" />
+	        <p:tab title="contract start from #{list.startDate} lasting #{list.term} days which id is #{list.id}">
+	        	<p:messages id="message" showDetail="true" autoUpdate="true" closable="true"/>
+	            <h:panelGrid columns="2" cellpadding="5">         
+	            	<h:outputText value="Lease Link" style="font-weight: bold" />
+	                <p:link outcome="lease.xhtml?id=#{list.id}" value="click here" />         
+	                
+	                <h:outputText value="Product Detail:" style="font-weight: bold" />
+	                <p:link outcome="product.xhtml?id=#{list.product.id}" value="click here" />
+	                
+	                <h:outputText value="Contract Status:" style="font-weight: bold" />
+	                
+	                <h:outputText value="contract closed" rendered="#{list.status==0}"/>
+			    		
+			    	<h:outputText value="You have  new request" rendered="#{list.status==1 and list.lender.id==profile.userid}"/>
+			    	<h:outputText value="Please waiting for lender agree" rendered="#{list.status==1 and list.lendee.id==profile.userid}"/>
+			        
+			        <h:outputText value="Please waiting for lendee agree" rendered="#{list.status==2 and list.lender.id==profile.userid}"/>
+			        <h:outputText value="Please make contract and pay" rendered="#{list.status==2 and list.lendee.id==profile.userid}"/>
+			        	
+			        <h:outputText value="lendee agree the contract" rendered="#{list.status==3 and list.lender.id==profile.userid}"/>
+			        <h:outputText value="Please waiting for lender send the product" rendered="#{list.status==3 and list.lendee.id==profile.userid}"/>
+			        	
+			        <h:outputText value="Please waiting for lendee confirm" rendered="#{list.status==4 and list.lender.id==profile.userid}"/>
+			        <h:outputText value="please confirm product" rendered="#{list.status==4 and list.lendee.id==profile.userid}"/>
+			        	
+			        <h:outputText value="Please waiting for lendee return the product" rendered="#{list.status==5 and list.lender.id==profile.userid}"/>
+			        <h:outputText value="Please return the product when time is up" rendered="#{list.status==5 and list.lendee.id==profile.userid}"/>
+			        	
+			        <h:outputText value="receive the product from lendee" rendered="#{list.status==6 and list.lender.id==profile.userid}"/>
+			        <h:outputText value="Please waiting for lender confirm the product" rendered="#{list.status==6 and list.lendee.id==profile.userid}"/>
+			        	
+			        <h:outputText value="the contract finish" rendered="#{list.status==7}"/>
+			        
+			        <h:outputLabel value="lendee's profile" style="font-weight:bold" rendered="#{list.status==1 and list.lender.id==profile.userid}"/> 
+				    <p:commandLink onclick="PF('proDlg').show()" value="click here" rendered="#{list.status==1 and list.lender.id==profile.userid}"/> 
+				    
+					<h:outputLabel value="input the location of the product to be used if necessary:" style="font-weight:bold" rendered="#{list.status==1 and list.lender.id==profile.userid}"/> 
+				    <h:inputText value="#{con.location}" rendered="#{list.status==1 and list.lender.id==profile.userid}"/>
+					<h:outputLabel value="input the age of the user to use the product if necessary:" style="font-weight:bold" rendered="#{list.status==1 and list.lender.id==profile.userid}"/> 
+					<h:inputText value="#{con.age}" rendered="#{list.status==1 and list.lender.id==profile.userid}"/>		
+					<h:outputLabel value="input the price(totally and include post fee if you want) of the product if you want to change it(default #{list.finalprice} EUR):" style="font-weight:bold" rendered="#{list.status==1 and list.lender.id==profile.userid}"/> 
+					<h:inputText value="#{con.price}" rendered="#{list.status==1 and list.lender.id==profile.userid}"/>		
+					<h:outputLabel value="input the additional contract detail if you want" style="font-weight:bold" rendered="#{list.status==1 and list.lender.id==profile.userid}"/>
+					<p:textEditor value="#{con.customer_detail}" width="400" height="300" style="margin-bottom:10px" placeholder="Enter your content" rendered="#{list.status==1 and list.lender.id==profile.userid}" />
+					<h:outputLabel value="sign here" style="font-weight:bold" rendered="#{list.status==1 and list.lender.id==profile.userid}"/>
+					<p:signature id="sign" value="#{con.lenderSignature}" style="width:400px;height:200px" widgetVar="sig" required="true" guideline="true" rendered="#{list.status==1 and list.lender.id==profile.userid}"/>
+					<p:commandButton ajax="false" value="save the contract and send to the lendee" validateClient="true" update="message" action="#{con.updateContractWithFirstTime(list.id)}" rendered="#{list.status==1 and list.lender.id==profile.userid}"/>
+					
+					<h:outputLabel value="limited age:" style="font-weight:bold" rendered="#{list.status==2 and list.lendee.id==profile.userid}"/>
+					<h:outputLabel value="#{list.age}" style="font-weight:bold" rendered="#{list.status==2 and list.lendee.id==profile.userid}"/>
+					<h:outputLabel value="limited location:" style="font-weight:bold" rendered="#{list.status==2 and list.lendee.id==profile.userid}"/>
+					<h:outputLabel value="#{list.location}" style="font-weight:bold" rendered="#{list.status==2 and list.lendee.id==profile.userid}"/>
+					<h:outputLabel value="price you should pay totally:" style="font-weight:bold" rendered="#{list.status==2 and list.lendee.id==profile.userid}"/>
+					<h:outputLabel value="#{list.finalprice}" style="font-weight:bold" rendered="#{list.status==2 and list.lendee.id==profile.userid}"/>
+					<h:outputLabel value="customer_detail:" style="font-weight:bold" rendered="#{list.status==2 and list.lendee.id==profile.userid}"/>
+					<h:outputLabel escape="false" value="#{list.customer_detail}" style="font-weight:bold" rendered="#{list.status==2 and list.lendee.id==profile.userid}"/>
+					<h:outputLabel value="pay by credit" style="font-weight:bold" rendered="#{list.status==2 and list.lendee.id==profile.userid}"/>
+					<h:inputText style="font-weight:bold" rendered="#{list.status==2 and list.lendee.id==profile.userid}"/>
+					<h:outputLabel value="pay by paypal" style="font-weight:bold" rendered="#{list.status==2 and list.lendee.id==profile.userid}"/>
+					<h:inputText style="font-weight:bold" rendered="#{list.status==2 and list.lendee.id==profile.userid}"/>
+					<h:outputLabel value="pay by bitcoin" style="font-weight:bold" rendered="#{list.status==2 and list.lendee.id==profile.userid}"/>
+					<h:inputText style="font-weight:bold" rendered="#{list.status==2 and list.lendee.id==profile.userid}"/>
+					<p:outputLabel for="console" value="choose billing schemes(it will automatic paid since you choose):" style="font-weight:bold" rendered="#{list.status==2 and list.lendee.id==profile.userid}"/>
+					<p:selectOneMenu id="console" value="daily" style="width:125px" rendered="#{list.status==2 and list.lendee.id==profile.userid}">
+			            <f:selectItem itemLabel="hourly"  itemValue="hourly" />
+			            <f:selectItem itemLabel="daily"  itemValue="daily"/>
+			            <f:selectItem itemLabel="weekly"  itemValue="weekly" itemDisabled ="#{7 > list.term}" />
+			            <f:selectItem itemLabel="fortnight" itemValue="fortnight" itemDisabled ="#{14 > list.term}" />
+			            <f:selectItem itemLabel="monthly" itemValue="monthly" itemDisabled ="#{30 > list.term}" />
+			            <f:selectItem itemLabel="yearly" itemValue="yearly" itemDisabled = "#{365 > list.term}" />
+			        </p:selectOneMenu>
+			        <h:outputLabel value="sign here" style="font-weight:bold" rendered="#{list.status==2 and list.lendee.id==profile.userid}"/>
+					<p:signature id="signature" value="#{con.lendeeSignature}" style="width:400px;height:200px" widgetVar="sig" required="true" guideline="true" rendered="#{list.status==2 and list.lendee.id==profile.userid}"/>
+					<p:commandButton ajax="false" value="accept and pay" action="#{con.lendeeSign(list.id,3)}" validateClient="true" update="message" rendered="#{list.status==2 and list.lendee.id==profile.userid}" />
+					
+					<h:outputLabel value="lendee's address" style="font-weight:bold" rendered="#{list.status==3 and list.lender.id==profile.userid}"/>
+					<h:outputLabel value="#{con.getLendeeAddress(list.id)}" style="font-weight:bold" rendered="#{list.status==3 and list.lender.id==profile.userid}"/>
+					<p:commandButton ajax="false" value="confirm send" action="#{con.setConStatus(list.id,4)}" rendered="#{list.status==3 and list.lender.id==profile.userid}" />
+					
+					<p:commandButton ajax="false" value="confirm receive" action="#{con.setConStatus(list.id,5)}" rendered="#{list.status==4 and list.lendee.id==profile.userid}" />
+					
+					<h:outputLabel value="lender's address" style="font-weight:bold" rendered="#{list.status==5 and list.lendee.id==profile.userid}"/>
+					<h:outputLabel value="#{con.getLenderAddress(list.id)}" style="font-weight:bold" rendered="#{list.status==5 and list.lendee.id==profile.userid}"/>
+					<p:commandButton ajax="false" value="confirm send " action="#{con.setConStatus(list.id,6)}" rendered="#{list.status==5 and list.lendee.id==profile.userid}" />
+					
+					<p:commandButton ajax="false" value="conform receive and finish contract" action="#{con.finishContract(list.id,7)}" rendered="#{list.status==6 and list.lender.id==profile.userid}" />
+					
+					<p:commandButton ajax="false" value="reject or cancel" action="#{con.rejectContract(list.id,0)}" rendered="#{list.status==1 or list.status==2}" />
+	            </h:panelGrid>
+	        </p:tab>
+	    </p:accordionPanel>
+	</h:form>
+	<p:dialog header="lendee profile" id="proDlg" widgetVar="proDlg" dynamic="true">
+		<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+			<h:outputLabel value="EMAIL:" style="font-weight:bold" /> 
+			<h:outputLabel value="#{con.lendeeProf.email}" style="font-weight:bold" />
+			<h:outputLabel value="NAME:" style="font-weight:bold" /> 
+			<h:outputLabel value="#{con.lendeeProf.name}" style="font-weight:bold" />
+			<h:outputLabel value="PHONE:" style="font-weight:bold" /> 
+			<h:outputLabel value="#{con.lendeeProf.phone}" style="font-weight:bold" />
+			<h:outputLabel value="ADDRESS:" style="font-weight:bold" /> 
+			<h:outputLabel value="#{con.lendeeProf.address}" style="font-weight:bold" />
+		</h:panelGrid>
+	</p:dialog>
+</h:body>
+</html>

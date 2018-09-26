@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">   
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:h="http://java.sun.com/jsf/html" 
+	xmlns:f="http://java.sun.com/jsf/core" 
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:p="http://primefaces.org/ui">   
+	<h:head>  
+ 		<title>Lease Detail</title>   
+	</h:head> 
+	<h:body>
+		<f:event listener="#{lease.getLease(param['id'])}" type="preRenderView" />
+		<h:form id="lease">
+			<center><h:outputText value= "Lease" style="font-size:26px;display:block"/></center>
+			<h:outputText value = "Detail" style="font-size:26px;display:block"/><br />
+			<h:outputText style="font-size:26px;display:block" value = "The lease between #{lease.lender.name} and #{lease.lendee.name} on the #{lease.pro.name} will start at the #{lease.lease.startDate}, lasting #{lease.lease.term} days." rendered="#{lease.lease.term==lp.shortTerm}"/>
+			<h:outputText style="font-size:26px;display:block" value = "The lease between #{lease.lender.name} and #{lease.lendee.name} on the #{lease.pro.name} will start at the #{lease.lease.startDate}, lasting #{lease.lease.term} days." rendered="#{lease.lease.term==lp.mediumTerm}"/>
+			<h:outputText style="font-size:26px;display:block" value = "The lease between #{lease.lender.name} and #{lease.lendee.name} on the #{lease.pro.name} will start at the #{lease.lease.startDate}, lasting #{lease.lease.term} days." rendered="#{lease.lease.term==lp.averageTerm}"/>
+			
+			<h:outputText style="font-size:26px;display:block" value = "Customer Detail" rendered="#{lease.lease.customer_detail!=''}"/>
+			<h:outputText value = "#{lease.lease.customer_detail}" escape="false" rendered="#{lease.lease.customer_detail!=''}"/>
+			<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+				<h:outputText style="font-size:26px;display:block" value="Additional" />
+				<h:outputText style="font-size:26px;display:block" value="" />
+				<h:outputText style="font-size:26px;display:block" value="price:" />
+				<h:outputText style="font-size:26px;display:block" value="#{lease.lease.finalprice}"/>
+				<h:outputText style="font-size:26px;display:block" value="age:" rendered="#{lease.lease.age!=''}"/>
+				<h:outputText style="font-size:26px;display:block" value="#{lease.lease.age}" rendered="#{lease.lease.age!=''}" />
+				<h:outputText style="font-size:26px;display:block" value="location:" rendered="#{lease.lease.location!=''}"/>
+				<h:outputText style="font-size:26px;display:block" value="#{lease.lease.location}" rendered="#{lease.lease.location!=''}"/>
+	        	
+	        	<h:outputText style="font-size:26px;display:block" value="Lender's Identify" />
+	        	<p:graphicImage style="width:180px;height:270px;" value="upload_cred/#{lease.lease.lender.credential}" />
+	        	
+	        	<h:outputText style="font-size:26px;display:block" value="Lendee's Identify" />
+	        	<p:graphicImage style="width:180px;height:270px;" value="upload_cred/#{lease.lease.lendee.credential}" />
+	        	
+	    		<h:outputText style="font-size:26px;display:block" value="Lender's Signature" />
+	        	<p:signature style="width:400px;height:200px;" value="#{lease.lease.lenderSignature}" readonly="true"
+	                     backgroundColor="#eaeaea" color="#03a9f4"/>
+	    		
+	    		<h:outputText style="font-size:26px;display:block" value="Lendee's Signature" />
+	        	<p:signature style="width:400px;height:200px;" value="#{lease.lease.lendeeSignature}" readonly="true"
+	                     backgroundColor="#eaeaea" color="#03a9f4"/>
+	    		
+			</h:panelGrid>
+		</h:form>
+		<p:commandButton value="Print" type="button" icon="ui-icon-print" style="display:block;margin-bottom: 20px">
+    		<p:printer target="lease" />
+		</p:commandButton>
+	</h:body>
+</html>

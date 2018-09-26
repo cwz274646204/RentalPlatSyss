@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">   
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:h="http://java.sun.com/jsf/html" 
+	xmlns:f="http://java.sun.com/jsf/core" 
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:p="http://primefaces.org/ui">   
+	<h:head>  
+ 		<title>WELCOME</title>   
+	</h:head>   
+ 
+    <h:body>
+    	<f:event listener="#{productList.getProductAllList}" type="preRenderView" />
+    	<f:event listener="#{admin.initLP}" type="preRenderView" />
+    	<ui:include src="stack.xhtml" />
+    	<h:form id="search" style="margin-bottom:10px;width:1000px;">
+    		<p:panel id="panel" header="Search Form"> 
+		    	<center>
+		    		<h:outputLabel value="keyword:" style="font-weight:bold" /> <h:inputText value="#{productList.keyword}"/>
+		    		<p:commandButton value="search" action="#{productList.getProductListByKeyword}" update="products" />
+		    	</center>
+	    	</p:panel>
+	    </h:form>
+    	<h:form id="products" style="margin-bottom:10px;width:1000px;">
+    		<p:layout style="height:550px">
+    			<p:layoutUnit position="west" resizable="true" size="500" maxSize="500">
+    			<p:dataScroller value="#{productList.productList}" var="list" mode="inline">
+			        <f:facet name="header">All Prodcuts you can lent</f:facet>
+			        <h:panelGrid columns="2" columnClasses="logo,detail">
+			            <p:graphicImage value="upload_product/#{list.photo}" style="width:100px;height:120px;"/>
+			            <p:outputPanel>
+			                <h:panelGrid columns="2" cellpadding="5">
+			                    <h:outputText value="Name:" />
+			                    <h:outputText value="#{list.name}" style="font-weight: bold"/>
+			                    <h:outputText value="Price:" />
+			                    <h:outputText value="#{list.price}" style="font-weight: bold"/>
+			                    <h:outputText value="Insuarnce:" />
+			                    <h:outputText value="#{list.insurance}" style="font-weight: bold"/>
+			                    <p:link outcome="product.xhtml?id=#{list.id}" value="click here to see detail" />
+			                </h:panelGrid>
+			            </p:outputPanel>
+			        </h:panelGrid>
+			    </p:dataScroller>
+			    </p:layoutUnit>
+			    <p:layoutUnit position="center">
+	        		<p:dataScroller value="#{sub.subProduct}" var="list" mode="inline">
+			        <f:facet name="header">Subscribe product</f:facet>
+			        <h:panelGrid columns="2" columnClasses="logo,detail">
+			            <p:graphicImage value="upload_product/#{list.photo}" style="width:100px;height:120px;"/>
+			            <p:outputPanel>
+			                <h:panelGrid columns="2" cellpadding="5">
+			                    <h:outputText value="Name:" />
+			                    <h:outputText value="#{list.name}" style="font-weight: bold"/>
+			                    <h:outputText value="Price:" />
+			                    <h:outputText value="#{list.price}" style="font-weight: bold"/>
+			                    <h:outputText value="Insuarnce:" />
+			                    <h:outputText value="#{list.insurance}" style="font-weight: bold"/>
+			                    <p:link outcome="product.xhtml?id=#{list.id}" value="click here to see detail" />
+			                </h:panelGrid>
+			            </p:outputPanel>
+			        </h:panelGrid>
+			    </p:dataScroller>
+	    		</p:layoutUnit>
+		    </p:layout>
+    	</h:form>
+    </h:body>
+</html>

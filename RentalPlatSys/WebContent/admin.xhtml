@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">   
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:h="http://java.sun.com/jsf/html" 
+	xmlns:f="http://java.sun.com/jsf/core" 
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:p="http://primefaces.org/ui">   
+	<h:head>  
+ 		<title>admin</title>   
+	</h:head>   
+ 
+    <h:body>
+    	<ui:include src="stack.xhtml" />
+    	<f:event listener="#{admin.checkIsAdmin}" type="preRenderView" />
+		<h:form id="leaseperiod" style="margin-bottom:10px;width:1000px;">
+			<p:panel header="edit the lease period" > 
+				<h:panelGrid columns="6" style="margin-bottom:10px" cellpadding="5">
+					<h:outputLabel value="short:" style="font-weight:bold" /> <h:inputText value="#{admin.shortTerm}" style="font-weight:bold" />
+					<h:outputLabel value="medium:" style="font-weight:bold" /> <h:inputText value="#{admin.medium}" style="font-weight:bold" />
+					<h:outputLabel value="average:" style="font-weight:bold" /> <h:inputText value="#{admin.average}" style="font-weight:bold" />
+					<p:commandButton value="save" action="#{admin.updateTerm}"/> 
+				</h:panelGrid>
+			</p:panel>
+		</h:form>
+    	<h:form style="width:1000px">
+		    <p:dataTable id="userList" var="list" value="#{admin.users}" widgetVar="userTable" multiViewState="true"
+		                 rows="10" paginator="true"
+		                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+		                 rowsPerPageTemplate="5,10,15"
+		                 selectionMode="single" rowKey="#{list.id}"
+		                 filteredValue="">
+		 		<f:facet name="header">
+        			User Profile
+    			</f:facet>
+		        <p:column headerText="Id">
+		            <h:outputText value="#{list.id}" />
+		        </p:column>
+		 
+		        <p:column headerText="email">
+		            <h:outputText value="#{list.email}" />
+		        </p:column>
+		        
+		 		<p:column headerText="name">
+		            <h:outputText value="#{list.name}" />
+		        </p:column>
+		        
+		        <p:column headerText="phone">
+		            <h:outputText value="#{list.phone}" />
+		        </p:column>
+		        
+		        <p:column headerText="address">
+		            <h:outputText value="#{list.address}" />
+		        </p:column>
+		        
+		        <p:column headerText="credential">
+		         	<h:outputText value="No Credential" rendered="#{list.credential==null}"/>
+		        	<p:commandLink value="click here to see"  oncomplete="window.open('upload_cred/#{list.credential}');"  rendered="#{list.credential!=null}"/>
+		        </p:column>
+		    </p:dataTable>
+		</h:form>
+		<br />
+		<h:form style="width:1000px">
+			<p:dataTable id="conList" var="list" value="#{admin.con}" widgetVar="conTable" multiViewState="true"
+		                 rows="10" paginator="true"
+		                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+		                 rowsPerPageTemplate="5,10,15"
+		                 selectionMode="single" rowKey="#{list.id}">
+		 		<f:facet name="header">
+		 			Contract List
+		 		</f:facet>
+		 		<p:column headerText="Id">
+		            <h:outputText value="#{list.id}" />
+		        </p:column>
+		        <p:column headerText="term">
+		            <h:outputText value="#{list.term} days" />
+		        </p:column>
+		        <p:column headerText="start date">
+		            <h:outputText value="#{list.startDate}" />
+		        </p:column>
+		        <p:column headerText="product">
+		            <p:link outcome="product.xhtml?id=#{list.product.id}" value="product detail" />
+		        </p:column>
+		        <p:ajax event="rowSelect" oncomplete="PF('conDlg').show()" listener="#{admin.setSelConId}" update="conDlg"/>
+		 	</p:dataTable>
+		</h:form>
+		<p:dialog id="conDlg" widgetVar="conDlg" header="contract history" dynamic="true">
+			<p:outputPanel id="multiCarDetail" style="text-align:center;">
+            <ui:repeat value="#{admin.getConHis()}" var="contract">
+            	<h:panelGrid columns="2" cellpadding="5">  
+	                <h:outputText value="the contract created at" style="display:block" rendered="#{contract.status==1}"/>
+	                <h:outputText value="#{contract.date}" style="display:block;font-weight:bold;" rendered="#{contract.status==1}"/>
+	                
+	                <h:outputText value="the lender edit the contract at" style="display:block" rendered="#{contract.status==2}"/>
+	                <h:outputText value="#{contract.date}" style="display:block;font-weight:bold;" rendered="#{contract.status==2}"/>
+	                
+	                <h:outputText value="the lendee accept and pay the contract at" style="display:block" rendered="#{contract.status==3}"/>
+	                <h:outputText value="#{contract.date}" style="display:block;font-weight:bold;" rendered="#{contract.status==3}"/>
+	                
+	                <h:outputText value="the lender send the product at" style="display:block" rendered="#{contract.status==4}"/>
+	                <h:outputText value="#{contract.date}" style="display:block;font-weight:bold;" rendered="#{contract.status==4}"/>
+	                
+	                <h:outputText value="the lendee receive the product at" style="display:block" rendered="#{contract.status==5}"/>
+	                <h:outputText value="#{contract.date}" style="display:block;font-weight:bold;" rendered="#{contract.status==5}"/>
+	                
+	                <h:outputText value="the lendee send the prodcut back at" style="display:block" rendered="#{contract.status==6}"/>
+	                <h:outputText value="#{contract.date}" style="display:block;font-weight:bold;" rendered="#{contract.status==6}"/>
+	                
+	                <h:outputText value="the lender receive the product and contract finished at}" style="display:block" rendered="#{contract.status==7}"/>
+            		<h:outputText value="#{contract.date}" style="display:block;font-weight:bold;" rendered="#{contract.status==7}"/>
+	                
+            	</h:panelGrid>
+            </ui:repeat>
+        	</p:outputPanel>
+		</p:dialog>
+    </h:body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">   
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:h="http://java.sun.com/jsf/html" 
+	xmlns:f="http://java.sun.com/jsf/core" 
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:p="http://primefaces.org/ui">   
+	<h:head>  
+ 		<title>Hello World</title>   
+	</h:head>   
+    <h:body>
+  		<ui:include src="stack.xhtml" />
+    	<f:event listener="#{product.getProduct(param['id'])}" type="preRenderView" />
+		<h:form id="rent" value="product.p"> 
+			<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+				<h:outputLabel value="product's name:" style="font-weight:bold" />
+				<h:outputLabel value="#{product.p.name}" style="font-weight:bold" />
+				<h:outputLabel value="price per day:" style="font-weight:bold" /> 
+				<h:outputLabel value="#{product.p.price}" style="font-weight:bold" />
+				<h:outputLabel value="available date:" sytle="font-weight:bold" />
+				<h:outputLabel value="#{product.p.availableDate}" style="font-weight:bold" />
+				<h:outputLabel value="times:" sytle="font-weight:bold" />
+				<h:outputLabel value="#{product.p.times}" style="font-weight:bold" />
+				<h:outputLabel value="status:" sytle="font-weight:bold" />
+				<h:outputLabel value="available" style="font-weight:bold" rendered="#{product.p.status==0}"/>
+				<h:outputLabel value="on progress" style="font-weight:bold" rendered="#{product.p.status==1}"/>
+				<h:outputLabel value="Description:" style="font-weight:bold" />
+			</h:panelGrid>
+			<h:outputText value="#{product.p.description}" escape="false" style="font-weight:bold" /><br />
+		</h:form>
+		<h:outputLabel value="you can't rent the product without cred" rendered="#{profile.cred==null}"/>
+		<p:commandButton ajax="true"  value="rent" type="button" onclick="PF('rentDlg').show();" rendered="#{product.p.user.id!=profile.userid and profile.cred!=null}" />
+		
+		<p:dialog widgetVar="rentDlg" modal="true" position="center top">
+    		<h:form> 
+    			<p:messages id="message" showDetail="true" autoUpdate="true" closable="true"/>
+    			<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+    				<h:outputLabel value="the date you want to start renting" style="font-weight:bold" /> 
+    				<p:calendar id="popup" require="true" value="#{product.startRentingdate}" />
+    			</h:panelGrid>
+    			<h:panelGrid columns="1" style="margin-bottom:10px" cellpadding="5">
+			    <h:outputLabel value="the term you want to rent" style="font-weight:bold" />
+			    </h:panelGrid>
+			    <h:selectOneRadio value="#{product.term}" require="true">
+					<f:selectItem itemLabel="short(#{lp.shortTerm})" itemValue="#{lp.shortTerm}"/>
+					<f:selectItem itemLabel="medium(#{lp.mediumTerm})" itemValue="#{lp.mediumTerm}"/>
+					<f:selectItem itemLabel="average(#{lp.averageTerm})" itemValue="#{lp.averageTerm}"/>
+				</h:selectOneRadio>
+			    <p:commandButton ajax="true" validateClient="true" value="submit" action="#{product.rentProduct(product.p.id,product.p.user.id)}" update="message"/>
+		    </h:form>
+		</p:dialog>             
+    </h:body>
+</html>

@@ -1,0 +1,38 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+    <f:event listener="#{userLogin.handleEvent}" type="preRenderView" />
+    <h:form>
+	    <p:stack icon="https://www.primefaces.org/showcase/resources/demo/images/dock/stack.png" expanded="true">
+			<p:menuitem value="logout" icon="https://www.primefaces.org/showcase/resources/demo/images/timeline/callback.png" actionListener="#{userLogin.logout}"/>
+		    <p:menuitem value="admin" url="admin.xhtml" icon="https://www.primefaces.org/showcase/resources/demo/images/mockosx/terminal.png"  rendered="#{profile.isAdmin}"/>
+			<p:menuitem value="contract" icon="https://www.primefaces.org/showcase/resources/demo/images/timeline/mail.png" url="contract.xhtml"/>
+			<p:menuitem value="adding" icon="https://www.primefaces.org/showcase/resources/demo/images/images.png" onclick="PF('addDlg').show();" rendered="#{profile.cred!=null}" />
+			<p:menuitem value="profile" icon="https://www.primefaces.org/showcase/resources/demo/images/timeline/report.png" url="profile.xhtml"/>
+			<p:menuitem value="Home" icon="https://www.primefaces.org/showcase/resources/demo/images/timeline/homework.png" url="index.xhtml"/>
+		</p:stack>
+	</h:form>
+	<p:dialog id="addDlg" header="adding product" widgetVar="addDlg" modal="true" position="center top">
+    		<h:form enctype="multipart/form-data" style="width:700px;"> 
+    			<p:messages id="message" showDetail="true" autoUpdate="true" closable="true"/>
+    			<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+			    	<h:outputLabel value="name:" style="font-weight:bold" /> 
+			    	<h:inputText required="true" value="#{addProduct.name}"/>
+			    	<h:outputLabel value="price for day:" style="font-weight:bold" /> 
+			    	<h:inputText required="true" value="#{addProduct.price}"/>
+			    	<p:outputLabel value="insurance:" style="font-weight:bold" />
+			    	<h:selectOneRadio required="true" value="#{addProduct.insurance}">
+						<f:selectItem itemLabel="yes" itemValue="true"/>
+						<f:selectItem itemLabel="no" itemValue="false"/>
+					</h:selectOneRadio>
+					<h:outputLabel value="select cover photo:" style="font-weight:bold" />
+					<p:fileUpload fileUploadListener="#{addProduct.saveFile}" mode="advanced" dragDropSupport="false" fileLimit="1" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+		    	</h:panelGrid>
+		    	<p:textEditor value="#{addProduct.description}" height="200" style="margin-bottom:10px;" placeholder="Enter your content" />
+			    <p:commandButton ajax="true" validateClient="true" value="submit" action="#{addProduct.addProduct}" update="message"/>
+		    </h:form>
+		</p:dialog> 
+</ui:composition>
